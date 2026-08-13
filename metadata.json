@@ -1,0 +1,6 @@
+{
+  "name": "ML Data-Readiness Risk Analyzer",
+  "description": "Analyze datasets before ML training to identify quality issues, data leakage, target imbalance, feature risks, and calculate ML readiness scores.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
