@@ -18,7 +18,8 @@ import {
   ShieldCheck,
   LogOut,
   Sun,
-  Moon
+  Moon,
+  Wand2
 } from 'lucide-react';
 import { AnalysisResults, UserProfile } from '../types';
 
@@ -57,6 +58,7 @@ export const SidebarNavigation: React.FC<SidebarProps> = ({
     { id: 'features', label: 'Feature Analysis', icon: Database, badge: currentAnalysis.profile.columnCount },
     { id: 'target', label: 'Target Analysis', icon: Target },
     { id: 'recommendations', label: 'Recommendations', icon: ListOrdered, badge: currentAnalysis.recommendations.length },
+    { id: 'smart-prep', label: 'Smart Data Preparation', icon: Wand2 },
     { id: 'ai-assessment', label: 'AI Executive Summary', icon: Sparkles },
     { id: 'report', label: 'Full Readiness Report', icon: FileSpreadsheet },
   ] : [];

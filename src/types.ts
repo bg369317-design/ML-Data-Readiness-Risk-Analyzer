@@ -125,6 +125,75 @@ export interface ReadinessSubScores {
   mlSafety: number;      // ML Safety index
 }
 
+export interface CleaningLogEntry {
+  id: string;
+  timestamp: string;
+  operation: string;
+  feature?: string;
+  method: string;
+  affectedCount: number;
+  details: string;
+}
+
+export interface DatasetVersion {
+  versionNumber: number;
+  label: string;
+  timestamp: string;
+  rowCount: number;
+  columnCount: number;
+  readinessScore: number;
+  operationsApplied: string[];
+}
+
+export interface MissingTreatmentConfig {
+  method: 'median' | 'mean' | 'mode' | 'constant' | 'remove' | 'keep';
+  customValue?: string | number;
+}
+
+export interface OutlierTreatmentConfig {
+  method: 'keep' | 'remove' | 'cap' | 'log';
+}
+
+export interface CleaningConfig {
+  removeDuplicates: boolean;
+  standardizeColumnNames: boolean;
+  missingValueTreatments: Record<string, MissingTreatmentConfig>;
+  typeConversions: Record<string, 'numeric' | 'categorical' | 'text' | 'datetime' | 'boolean'>;
+  categoryStandardizations: Record<string, boolean>;
+  excludedFeatures: string[];
+  outlierTreatments: Record<string, OutlierTreatmentConfig>;
+  logicalRules: {
+    column: string;
+    operator: '<' | '>' | '<=' | '>=' | '==' | '!=';
+    value: number;
+    action: 'remove' | 'keep';
+  }[];
+}
+
+export interface ValidationCheckResult {
+  passed: boolean;
+  checkName: string;
+  message: string;
+  severity: 'info' | 'warning' | 'error';
+}
+
+export interface BeforeAfterMetrics {
+  originalScore: number;
+  preparedScore: number;
+  scoreImprovement: number;
+  originalStatus: 'Ready' | 'Needs Review' | 'High Risk';
+  preparedStatus: 'Ready' | 'Needs Review' | 'High Risk';
+  originalRows: number;
+  preparedRows: number;
+  rowsRemoved: number;
+  originalMissingPercentage: number;
+  preparedMissingPercentage: number;
+  originalDuplicates: number;
+  preparedDuplicates: number;
+  resolvedRiskIds: string[];
+  remainingRiskIds: string[];
+}
+
 export interface AnalysisResults {
   id: string;
   createdAt: string;
@@ -142,6 +211,15 @@ export interface AnalysisResults {
   scores: ReadinessSubScores;
   overallScore: number;
   overallStatus: 'Ready' | 'Needs Review' | 'High Risk';
+  // Smart Data Preparation extensions
+  rawRows?: any[];
+  preparedRows?: any[];
+  csvText?: string;
+  excludedFeatures?: string[];
+  cleaningLogs?: CleaningLogEntry[];
+  versions?: DatasetVersion[];
+  beforeAfterMetrics?: BeforeAfterMetrics;
+  cleaningConfig?: CleaningConfig;
   aiSummary?: {
     plainLanguageSummary: string;
     majorRisksExplanation: string;

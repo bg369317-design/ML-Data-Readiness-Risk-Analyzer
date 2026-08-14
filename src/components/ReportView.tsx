@@ -164,7 +164,27 @@ export const ReportView: React.FC<ReportProps> = ({ analysis, onNavigate }) => {
           </div>
         </div>
 
-        {/* Section 5: Final Decision */}
+        {/* Section 5: Data Preparation Summary (If Prepared) */}
+        {analysis.beforeAfterMetrics && (
+          <div className="space-y-3 pt-2">
+            <h3 className="text-sm font-bold uppercase tracking-wider text-emerald-400 print:text-emerald-700">
+              5. Smart Data Preparation Summary
+            </h3>
+            <div className="bg-slate-950 print:bg-slate-50 p-4 rounded-xl border border-slate-800 print:border-slate-300 text-xs space-y-2">
+              <div className="flex items-center justify-between font-bold">
+                <span>Readiness Evolution:</span>
+                <span className="text-emerald-400 print:text-emerald-700">
+                  {analysis.beforeAfterMetrics.originalScore} → {analysis.beforeAfterMetrics.preparedScore} (+{analysis.beforeAfterMetrics.scoreImprovement} PTS)
+                </span>
+              </div>
+              <p className="text-slate-300 print:text-slate-800">
+                Prepared rows: {analysis.beforeAfterMetrics.preparedRows.toLocaleString()} (Cleaned {analysis.beforeAfterMetrics.rowsRemoved} rows). Resolved {analysis.beforeAfterMetrics.resolvedRiskIds.length} ML risks.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Section 6: Final Decision */}
         <div className="pt-4 border-t border-slate-800 print:border-slate-300 flex justify-between items-center text-xs">
           <div>
             <span className="font-bold text-slate-400 print:text-slate-600">Final Decision:</span>{' '}

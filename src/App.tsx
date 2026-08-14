@@ -14,6 +14,7 @@ import { DetailedRiskAnalysisView } from './components/DetailedRiskAnalysisView'
 import { FeatureAnalysisView } from './components/FeatureAnalysisView';
 import { TargetAnalysisView } from './components/TargetAnalysisView';
 import { RecommendationsView } from './components/RecommendationsView';
+import { SmartDataPreparationView } from './components/SmartDataPreparationView';
 import { AIAssessmentView } from './components/AIAssessmentView';
 import { ReportView } from './components/ReportView';
 import { HistoryView } from './components/HistoryView';
@@ -73,6 +74,7 @@ export default function App() {
     'features',
     'target',
     'recommendations',
+    'smart-prep',
     'ai-assessment',
     'report',
     'history',
@@ -181,6 +183,10 @@ export default function App() {
 
       if (res.ok) {
         const resultData: AnalysisResults = await res.json();
+        if (pendingFileData?.rows) {
+          resultData.rawRows = pendingFileData.rows;
+          resultData.preparedRows = pendingFileData.rows;
+        }
         setCurrentAnalysis(resultData);
         await fetchHistory();
       } else {
@@ -398,6 +404,20 @@ export default function App() {
           {activeTab === 'recommendations' && user && currentAnalysis && (
             <RecommendationsView
               analysis={currentAnalysis}
+              onNavigate={handleNavigate}
+            />
+          )}
+
+          {activeTab === 'smart-prep' && user && currentAnalysis && (
+            <SmartDataPreparationView
+              analysis={currentAnalysis}
+              onUpdateAnalysis={(updated) => {
+                setCurrentAnalysis(updated);
+                // Also update history list item
+                setHistory((prev) =>
+                  prev.map((item) => (item.id === updated.id ? updated : item))
+                );
+              }}
               onNavigate={handleNavigate}
             />
           )}

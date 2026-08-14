@@ -127,6 +127,25 @@ async function startServer() {
     }
   });
 
+  // Update analysis with data preparation results
+  app.post("/api/analysis/:id/clean", (req, res) => {
+    const { id } = req.params;
+    const analysis = analysesStore.get(id);
+    if (!analysis) {
+      return res.status(404).json({ error: "Analysis not found." });
+    }
+
+    const { config, preparedRows, beforeAfterMetrics, cleaningLogs, versions } = req.body;
+    analysis.cleaningConfig = config;
+    if (preparedRows) analysis.preparedRows = preparedRows;
+    if (beforeAfterMetrics) analysis.beforeAfterMetrics = beforeAfterMetrics;
+    if (cleaningLogs) analysis.cleaningLogs = cleaningLogs;
+    if (versions) analysis.versions = versions;
+
+    analysesStore.set(id, analysis);
+    res.json({ success: true, analysis });
+  });
+
   // History endpoint
   app.get("/api/history", (req, res) => {
     const list = Array.from(analysesStore.values()).map(a => ({
