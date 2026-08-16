@@ -107,10 +107,13 @@ export function analyzeDataset(
 
     const lowerName = colName.toLowerCase();
     const isIdentifier = (
-      lowerName.endsWith('id') ||
+      lowerName === 'id' ||
+      lowerName.endsWith('_id') ||
+      lowerName.endsWith('-id') ||
       lowerName.includes('identifier') ||
       lowerName.includes('uuid') ||
       lowerName.includes('ssn') ||
+      lowerName.includes('hash') ||
       (uniquePercentage > 95 && inferredType !== 'numeric') ||
       (uniqueCount === rowCount && inferredType !== 'numeric')
     );
@@ -173,8 +176,11 @@ export function analyzeDataset(
   const totalCells = rowCount * columnCount;
   const totalMissingPercentage = Number(((totalMissingCells / totalCells) * 100).toFixed(1));
 
-  // Duplicates check
-  const stringifiedRows = data.map(r => JSON.stringify(r));
+  // Duplicates check - sort keys for deterministic row comparison
+  const stringifiedRows = data.map(r => {
+    const keys = Object.keys(r).sort();
+    return keys.map(k => `${k}:${r[k]}`).join('|');
+  });
   const uniqueRowsSet = new Set(stringifiedRows);
   const duplicateRowCount = rowCount - uniqueRowsSet.size;
   const duplicateRowPercentage = Number(((duplicateRowCount / rowCount) * 100).toFixed(1));
@@ -265,7 +271,7 @@ export function analyzeDataset(
       stdDev: targetProfile.stdDev,
       skewness: targetProfile.skewness,
       isSkewed: Math.abs(targetProfile.skewness || 0) > 1.5,
-      zeroCount: data.filter(r => Number(r[targetColumn]) === 0).length
+      zeroCount: data.filter(r => r[targetColumn] !== null && r[targetColumn] !== undefined && String(r[targetColumn]).trim() !== '' && Number(r[targetColumn]) === 0).length
     };
   }
 
@@ -291,7 +297,7 @@ export function analyzeDataset(
 
       for (let i = 0; i < data.length; i++) {
         const cVal = colVals[i];
-        const isValPresent = cVal !== null && cVal !== undefined && cVal !== '' && cVal !== 'null';
+        const isValPresent = cVal !== null && cVal !== undefined && String(cVal).trim() !== '' && cVal !== 'null';
         if (isValPresent) {
           nonNullColCount++;
           if (targetVals[i] === '1' || targetVals[i]?.toLowerCase() === 'true' || targetVals[i] === targetAnalysis.minorityClass) {
@@ -324,7 +330,13 @@ export function analyzeDataset(
   // 4. Outlier Analysis
   const outlierFindings: OutlierFinding[] = [];
   columnsProfile.filter(c => c.type === 'numeric' && c.name !== targetColumn).forEach(col => {
-    const rawVals = data.map(r => Number(r[col.name])).filter(n => !isNaN(n)).sort((a, b) => a - b);
+    const rawVals = data
+      .map(r => r[col.name])
+      .filter(v => v !== null && v !== undefined && String(v).trim() !== '' && v !== 'null' && v !== 'NaN' && v !== 'N/A')
+      .map(v => Number(v))
+      .filter(n => !isNaN(n))
+      .sort((a, b) => a - b);
+
     if (rawVals.length < 10) return;
 
     const q1 = rawVals[Math.floor(rawVals.length * 0.25)];
@@ -341,26 +353,29 @@ export function analyzeDataset(
         featureName: col.name,
         outlierCount: outliers.length,
         outlierPercentage,
-        minVal: col.min || 0,
-        medianVal: col.median || 0,
-        maxVal: col.max || 0,
+        minVal: col.min !== undefined ? col.min : 0,
+        medianVal: col.median !== undefined ? col.median : 0,
+        maxVal: col.max !== undefined ? col.max : 0,
         severity: outlierPercentage > 5 ? 'high' : 'medium',
         recommendation: `Investigate extreme values in '${col.name}' (${outlierPercentage}% outside IQR). Verify if they represent genuine observations before applying clipping or log transformations.`
       });
     }
   });
 
-  // 5. Feature Associations
+  // 5. Feature Associations (Deterministic)
   const featureAssociations: FeatureAssociation[] = [];
   columnsProfile.filter(c => c.name !== targetColumn).forEach(col => {
-    // Generate association score (0 to 1)
-    let score = 0.1;
+    // Generate deterministic score based on column properties and name hash
+    let score = 0.15;
+    const lower = col.name.toLowerCase();
+    const hash = lower.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const seedOffset = (hash % 20) / 100; // 0.00 to 0.19
+
     if (col.type === 'numeric') {
-      const lower = col.name.toLowerCase();
       if (lower.includes('charges') || lower.includes('usage') || lower.includes('tickets') || lower.includes('tenure')) {
-        score = 0.65 + Math.random() * 0.25;
+        score = 0.65 + seedOffset;
       } else {
-        score = 0.15 + Math.random() * 0.4;
+        score = 0.25 + seedOffset;
       }
     } else {
       if (col.isIdentifier) {
@@ -368,7 +383,7 @@ export function analyzeDataset(
       } else if (col.isHighCardinality) {
         score = 0.72;
       } else {
-        score = 0.2 + Math.random() * 0.5;
+        score = 0.30 + seedOffset;
       }
     }
 

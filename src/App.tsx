@@ -83,7 +83,10 @@ export default function App() {
     'admin'
   ];
 
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState<boolean>(false);
+
   const handleNavigate = (tab: string, accountTypePreference?: 'user' | 'admin') => {
+    setIsMobileSidebarOpen(false);
     if (!user && protectedTabs.includes(tab)) {
       setAuthNotice("Authentication required: Please log in or register to use ML Readiness Risk Analyzer features.");
       setAuthAccountType(accountTypePreference || 'user');
@@ -270,7 +273,7 @@ export default function App() {
   };
 
   return (
-    <div className={`min-h-screen ${theme} bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 flex flex-col font-sans selection:bg-indigo-500 selection:text-white transition-colors duration-200`}>
+    <div className={`h-screen max-h-screen ${theme} bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 flex flex-col font-sans overflow-hidden selection:bg-indigo-500 selection:text-white transition-colors duration-200`}>
       <Navbar
         user={user}
         currentAnalysis={currentAnalysis}
@@ -278,13 +281,15 @@ export default function App() {
         theme={theme}
         onToggleTheme={handleToggleTheme}
         onNavigate={handleNavigate}
+        isMobileSidebarOpen={isMobileSidebarOpen}
+        onToggleMobileSidebar={() => setIsMobileSidebarOpen(prev => !prev)}
         onLogout={() => {
           setUser(null);
           setActiveTab('landing');
         }}
       />
 
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex overflow-hidden relative min-h-0">
         {/* Left Sidebar */}
         <SidebarNavigation
           user={user}
@@ -293,6 +298,8 @@ export default function App() {
           onToggleTheme={handleToggleTheme}
           onNavigate={handleNavigate}
           currentAnalysis={currentAnalysis}
+          isMobileOpen={isMobileSidebarOpen}
+          onCloseMobile={() => setIsMobileSidebarOpen(false)}
           onLogout={() => {
             setUser(null);
             setActiveTab('landing');
@@ -300,7 +307,7 @@ export default function App() {
         />
 
         {/* Main Content Area */}
-        <main className="flex-1 overflow-y-auto bg-slate-50 dark:bg-slate-900 pb-12 transition-colors duration-200">
+        <main className="flex-1 overflow-y-auto min-h-0 bg-slate-50 dark:bg-slate-900 pb-12 transition-colors duration-200 custom-scrollbar">
           {activeTab === 'landing' && (
             <LandingPage
               user={user}

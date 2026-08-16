@@ -2,7 +2,9 @@ import { OutlierFinding, OutlierTreatmentConfig } from '../types';
 
 export function calculateIQRBounds(rows: any[], columnName: string) {
   const numericValues = rows
-    .map((r) => Number(r[columnName]))
+    .map((r) => r[columnName])
+    .filter((val) => val !== null && val !== undefined && String(val).trim() !== '' && val !== 'null' && val !== 'NaN' && val !== 'N/A')
+    .map((v) => Number(v))
     .filter((n) => !isNaN(n))
     .sort((a, b) => a - b);
 
@@ -32,7 +34,11 @@ export function handleOutliers(
   const bounds = calculateIQRBounds(rows, columnName);
   let affectedCount = 0;
 
-  const numericValsBefore = rows.map((r) => Number(r[columnName])).filter((n) => !isNaN(n));
+  const numericValsBefore = rows
+    .map((r) => r[columnName])
+    .filter((val) => val !== null && val !== undefined && String(val).trim() !== '' && val !== 'null' && val !== 'NaN' && val !== 'N/A')
+    .map((v) => Number(v))
+    .filter((n) => !isNaN(n));
   const minBefore = numericValsBefore.length ? Math.min(...numericValsBefore) : 0;
   const maxBefore = numericValsBefore.length ? Math.max(...numericValsBefore) : 0;
 

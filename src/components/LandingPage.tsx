@@ -91,27 +91,27 @@ export const LandingPage: React.FC<LandingPageProps> = ({ user, onNavigate, onTr
       )}
 
       {/* Hero Section */}
-      <section className="relative pt-12 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center overflow-hidden">
+      <section className="relative pt-8 pb-12 sm:pt-10 sm:pb-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center overflow-hidden">
         {/* Subtle background glow */}
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-500/10 dark:bg-indigo-600/15 blur-[120px] rounded-full pointer-events-none" />
 
-        <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 text-indigo-700 dark:text-indigo-300 text-xs font-semibold mb-6">
+        <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 text-indigo-700 dark:text-indigo-300 text-xs font-semibold mb-4">
           <Sparkles className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
           <span>Pre-Training Dataset Audit Engine</span>
         </div>
 
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-6 max-w-4xl mx-auto leading-tight">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-4 max-w-4xl mx-auto leading-tight sm:leading-snug">
           Know whether your dataset is ready for machine learning{' '}
           <span className="bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-600 dark:from-indigo-400 dark:via-blue-400 dark:to-cyan-300 bg-clip-text text-transparent">
             before you train your model.
           </span>
         </h1>
 
-        <blockquote className="text-lg sm:text-xl text-indigo-900 dark:text-indigo-200/90 max-w-2xl mx-auto mb-6 italic font-medium">
+        <blockquote className="text-base sm:text-lg text-indigo-900 dark:text-indigo-200/90 max-w-2xl mx-auto mb-4 italic font-medium">
           “Clean data does not automatically mean good ML data.”
         </blockquote>
 
-        <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-3xl mx-auto mb-10 leading-relaxed">
+        <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 max-w-2xl mx-auto mb-6 leading-relaxed">
           Upload your dataset, define your ML objective, and let the system identify data-quality problems, leakage risks, target issues, suspicious features, outliers, and other ML-readiness concerns.
         </p>
 
@@ -180,9 +180,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ user, onNavigate, onTr
       </section>
 
       {/* Visual Workflow Diagram */}
-      <section className="py-12 bg-slate-100/80 dark:bg-slate-800/50 border-y border-slate-200 dark:border-slate-700/80 transition-colors duration-200">
+      <section className="py-8 sm:py-10 bg-slate-100/80 dark:bg-slate-800/50 border-y border-slate-200 dark:border-slate-700/80 transition-colors duration-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-indigo-700 dark:text-indigo-400 mb-8">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-indigo-700 dark:text-indigo-400 mb-5">
             The Complete ML Readiness Workflow
           </h2>
 
@@ -190,15 +190,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({ user, onNavigate, onTr
             {workflowSteps.map((step, idx) => (
               <div
                 key={idx}
-                className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4 flex flex-col items-center justify-center text-center relative group hover:border-indigo-500/40 shadow-sm transition-colors"
+                className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3.5 flex flex-col items-center justify-center text-center relative group hover:border-indigo-500/40 shadow-sm transition-colors"
               >
-                <div className="w-7 h-7 rounded-full bg-indigo-50 dark:bg-slate-900 text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 text-xs font-bold flex items-center justify-center mb-2">
+                <div className="w-6 h-6 rounded-full bg-indigo-50 dark:bg-slate-900 text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 text-[11px] font-bold flex items-center justify-center mb-1.5">
                   {idx + 1}
                 </div>
-                <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">{step.title}</h3>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">{step.desc}</p>
+                <h3 className="text-xs sm:text-sm font-semibold text-slate-900 dark:text-slate-100">{step.title}</h3>
+                <p className="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{step.desc}</p>
                 {idx < workflowSteps.length - 1 && (
-                  <ArrowRight className="hidden lg:block absolute -right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 dark:text-slate-600 z-10" />
+                  <ArrowRight className="hidden lg:block absolute -right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-slate-600 z-10" />
                 )}
               </div>
             ))}
@@ -207,29 +207,31 @@ export const LandingPage: React.FC<LandingPageProps> = ({ user, onNavigate, onTr
       </section>
 
       {/* Feature Grid */}
-      <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
+      <section className="py-10 sm:py-14 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-8 sm:mb-10">
+          <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-3">
             Built Specifically for ML-Specific Risks
           </h2>
-          <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto text-sm">
+          <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto text-xs sm:text-sm">
             Standard data profilers show you missing values. ML Readiness Risk Analyzer detects data leakage, memorization hazards, target imbalance, and ML pipeline failure risks.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
           {featureCards.map((card, idx) => {
             const Icon = card.icon;
             return (
               <div
                 key={idx}
-                className="bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 hover:border-indigo-500/30 rounded-2xl p-6 transition-all group shadow-sm"
+                className="bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 hover:border-indigo-500/30 rounded-xl p-5 transition-all group shadow-sm flex flex-col justify-between"
               >
-                <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-600/10 border border-indigo-200 dark:border-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                  <Icon className="w-5 h-5" />
+                <div>
+                  <div className="w-9 h-9 rounded-lg bg-indigo-50 dark:bg-indigo-600/10 border border-indigo-200 dark:border-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                    <Icon className="w-4 h-4" />
+                  </div>
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-1.5">{card.title}</h3>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">{card.desc}</p>
                 </div>
-                <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2">{card.title}</h3>
-                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">{card.desc}</p>
               </div>
             );
           })}

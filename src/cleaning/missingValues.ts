@@ -7,7 +7,7 @@ export function calculateColumnStats(rows: any[], colName: string) {
   const valueCounts: Record<string, number> = {};
 
   rawValues.forEach((val) => {
-    if (val !== null && val !== undefined && val !== '' && val !== 'null' && val !== 'NaN' && val !== 'N/A') {
+    if (val !== null && val !== undefined && String(val).trim() !== '' && val !== 'null' && val !== 'NaN' && val !== 'N/A') {
       validValues.push(val);
       const strVal = String(val).trim();
       valueCounts[strVal] = (valueCounts[strVal] || 0) + 1;
