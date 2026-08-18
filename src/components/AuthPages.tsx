@@ -18,42 +18,30 @@ export const AuthPages: React.FC<AuthPagesProps> = ({
   onSwitchMode
 }) => {
   const [accountType, setAccountType] = useState<'user' | 'admin'>(initialAccountType);
-  const [email, setEmail] = useState(
-    initialAccountType === 'admin' ? 'admin@mldata.io' : 'alex.rivera@datalab.io'
-  );
-  const [password, setPassword] = useState(
-    initialAccountType === 'admin' ? 'Admin@Pass67' : 'password123'
-  );
-  const [name, setName] = useState(
-    initialAccountType === 'admin' ? 'Sarah Chen' : 'Alex Rivera'
-  );
-  const [organization, setOrganization] = useState('DataLab AI');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [organization, setOrganization] = useState('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const handleSelectAccountType = (type: 'user' | 'admin') => {
     setAccountType(type);
-    if (type === 'admin') {
-      setEmail('admin@mldata.io');
-      setPassword('Admin@Pass67');
-      setName('Sarah Chen');
-      setOrganization('DataLab AI - Governance');
-    } else {
-      setEmail('alex.rivera@datalab.io');
-      setPassword('password123');
-      setName('Alex Rivera');
-      setOrganization('DataLab AI');
-    }
+    setEmail('');
+    setPassword('');
+    setName('');
+    setOrganization('');
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const isAdminAccount = accountType === 'admin' || email.toLowerCase() === 'admin@mldata.io';
     const userProfile: UserProfile = {
-      name: mode === 'register' ? name : (accountType === 'admin' ? name || 'Sarah Chen' : name || 'Alex Rivera'),
-      email,
-      role: accountType === 'admin' ? 'Data Governance Admin' : 'Lead ML Engineer',
-      organization: mode === 'register' ? organization : 'DataLab AI',
-      accountType,
-      isAdmin: accountType === 'admin'
+      name: mode === 'register' ? (name || 'New User') : (name || (isAdminAccount ? 'Sarah Chen' : 'Alex Rivera')),
+      email: email,
+      role: isAdminAccount ? 'Data Governance Admin' : 'Lead ML Engineer',
+      organization: mode === 'register' ? (organization || 'DataLab AI') : (isAdminAccount ? 'DataLab AI - Governance' : 'DataLab AI'),
+      accountType: isAdminAccount ? 'admin' : 'user',
+      isAdmin: isAdminAccount
     };
     onLoginSuccess(userProfile);
   };
@@ -230,23 +218,27 @@ export const AuthPages: React.FC<AuthPagesProps> = ({
           </button>
         </form>
 
-        <div className="mt-6 text-center text-xs text-slate-600 dark:text-slate-400">
-          {mode === 'login' ? (
-            <p>
-              Don't have an account?{' '}
-              <button onClick={() => onSwitchMode('register')} className="text-indigo-600 dark:text-indigo-400 font-semibold hover:underline">
-                Register here
-              </button>
-            </p>
-          ) : (
+        {mode === 'login' ? (
+          accountType === 'user' && (
+            <div className="mt-6 text-center text-xs text-slate-600 dark:text-slate-400">
+              <p>
+                Don't have an account?{' '}
+                <button onClick={() => onSwitchMode('register')} className="text-indigo-600 dark:text-indigo-400 font-semibold hover:underline">
+                  Register here
+                </button>
+              </p>
+            </div>
+          )
+        ) : (
+          <div className="mt-6 text-center text-xs text-slate-600 dark:text-slate-400">
             <p>
               Already have an account?{' '}
               <button onClick={() => onSwitchMode('login')} className="text-indigo-600 dark:text-indigo-400 font-semibold hover:underline">
                 Log in here
               </button>
             </p>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );
